@@ -62,7 +62,13 @@ class EthRPCServiceProvider extends ServiceProvider
             $this->raiseRunTimeException("Missing Ethereum RPC config key: 'port'.");
         }
 
-        return new EthRPC($config->get('eth_rpc.host'), $config->get('eth_rpc.port'));
+        return new EthRPC(
+            $config->get('eth_rpc.host'),
+            $config->get('eth_rpc.port'),
+            $this->configHas('timeout') ? [
+                'timeout' => $config->get('eth_rpc.timeout')
+            ] : []
+        );
     }
 
     /**

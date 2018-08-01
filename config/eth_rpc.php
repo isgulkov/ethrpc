@@ -9,5 +9,13 @@ return [
     'host' => env('ETH_RPC_HOST', 'http://localhost'),
 
     // The default port for most Ethereum nodes is 8545
-    'port' => env('ETH_RPC_PORT', '8545')
+    'port' => env('ETH_RPC_PORT', '8545'),
+
+
+    /*
+    | The time (in seconds) to wait for node's response before aborting
+    |
+    | Set to 0 to wait indefinitely (not recommended)
+    */
+    'timeout' => env('ETH_RPC_TIMEOUT', '1')
 ];
