@@ -10,7 +10,51 @@ This is a simple Laravel Service Provider providing for interacting with an Ethe
 
 The description of [the package this is forked from](https://github.com/jcsofts/laravel-ethereum) said basically all the same, including the word "simple". Then I go in because something wasn't working and realize it could use a fair bit more of simplification.
 
-Note that this package is mostly targeted at [Parity JSON API](https://wiki.parity.io/JSONRPC).
+Note that this package is mostly targeted at [Parity](https://wiki.parity.io/JSONRPC) — I haven't used any of the other nodes much.
+
+### How it works
+
+JSON RPC itself is so simple that this library has to do jack shit. Most of the time, you call a method with some params:
+
+```php
+$eth->eth_somethingOrOther("this", "that", "other");
+```
+
+and the probram literally just forwards this to the node in an HTTP `POST`'s body':
+
+```js
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "web3_clientVersion",
+    "params": ["this", "that", "other"]
+}
+```
+
+The node returns you either the result:
+
+```js
+{
+	"id": 1,
+	"jsonrpc": "2.0",
+     "result": "Donald Trump"
+}
+```
+
+or error response:
+
+```js
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "error": {
+        "code": -32600,
+        "message": "Invalid request"
+    }
+}
+```
+
+This is literally all the library does — pass simple JSON through, sometimes throwing an exception. No parsing of binary data packets, no complex logic, no encyption. Just a small convenience.
 
 Installation
 ------------
@@ -27,9 +71,9 @@ because I'm too embarrased to publish it on packagist. So you have to intrude in
 
 Add `"isgulkov/ethrpc": "dev-master"` to `"require"`, but to make it work, also add this repository to `repositories`:
 
-```json
+```js
 {
-    ...
+    // ...
 
     "repositories": [
         {
@@ -37,12 +81,16 @@ Add `"isgulkov/ethrpc": "dev-master"` to `"require"`, but to make it work, also 
             "url": "<... this repo's GitHub URL ...>"
         }
     ],
-	...
+
+	// ...
+
     "require": {
-        ...
+        // ...
         "isgulkov/ethrpc": "dev-master"
-        ...
+        // ...
     }
+
+    // ...
 }
 ```
 
@@ -77,30 +125,39 @@ Then update `config/eth_rpc.php` with your settings.
 
 > **TODO**: list the keys?
 
-Alternatively, you can set them in `.env` file, which the config file defaults to:
+Alternatively, you can set them in `.env` file, which the default config file uses:
 
 ```dotenv
 ETH_RPC_HOST=http://localhost
 ETH_RPC_PORT=8545
 ```
 
+after which, it falls back to the defaults (see above).
+
+> **TODO**: either remove the default values from `env()` calls, or remove all "no config" checks — one or the other!
+
 ## Usage
 
 
-To use the Ethereum Client Library you can use the facade, or request the instance from the service container:
+To use the Ethereum Client Library you can use the facade:
 
 ```php
-    try {
-        $ret = \EthRPC\EthRPC\Facade\EthRPC::eth_protocolVersion();
-        print_r($ret);
-    } catch (Exception $e){
-        echo $e->getMessage();
+use IsGulkov\EthRPC\Facade\EthRPC;
+
+class Mocha {
+    public function __construct(EthRPC $ethRPC) {
+        $this->eth = $ethRPC;
     }
+
+    function getGlobalSionistGovernmentBalance() {
+        return $this->eth::eth_getBalance("0x0000000000000000000000000000000000000000");
+    }
+
+    // ...
+}
 ```
 
-> **TODO**: this example ↑ has to be improved. Who writes like that?
-
-Or
+or request the instance from the service container:
 
 ```php
 $eth = app('EthRPC');
@@ -108,19 +165,17 @@ $eth = app('EthRPC');
 dd($eth::eth_protocolVersion());
 ```
 
->  **TODO**: provide a more elaborate explanation that just two examples, ffs — the library is 1 KB large
+Thus, you can call any methods supported *by your node*:
 
-## Troubleshooting
+- [JSON RPC](https://wiki.parity.io/JSONRPC) — Parity wiki;
+- [JSON RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC#json-rpc-endpoint) — official Ethereum wiki;
+- [Implemented (RPC) methods](https://github.com/trufflesuite/ganache-cli#implemented-methods) — `README.md` for Ganache CLI.
 
-#### I try to call a method I found in so-and-so wiki, but it says "method not supported"!
+Encoding and decoding hex data (such as hexadeciaml integers or byte strings) is currently completely on the user.
 
-This probably has nothing to do with the library — it's the node. Which one are you using? Because command support differs greatly between them.
-
-Also, on Parity, for example, most commands are disabled by default, and have to be manually enabled on startup.
-
-So, look into your node. Feel free to post an issue, though.
+I'm planning to address this as soon as the library is half-usable as it is; though it doesn't seem like too good of an idea to me.
 
 ## Credits
 
-[That guy](https://github.com/jcsofts), the owner of [this repo](https://github.com/jcsofts/laravel-ethereum) that I forked this from. Maybe it's a half-baked fork of some better thing, but I couldn't find anything close to it and serioursly doubt that.
+[This guy](https://github.com/jcsofts), the owner of [this repo](https://github.com/jcsofts/laravel-ethereum) that I forked it from. Maybe it's a half-baked fork of some better thing, but I couldn't find anything close to it and serioursly doubt that.
 
