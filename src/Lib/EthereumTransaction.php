@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: lee
- * Date: 11/12/2017
- * Time: 3:19 PM
- */
 
 namespace Jcsofts\LaravelEthereum\Lib;
-
 
 class EthereumTransaction
 {
@@ -55,7 +48,6 @@ class EthereumTransaction
         if(!empty($this->nonce)){
             $arr['nonce']=$this->nonce;
         }
-
 
         return array($arr);
     }

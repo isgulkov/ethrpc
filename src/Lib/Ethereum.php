@@ -1,11 +1,7 @@
 <?php
+
 namespace Jcsofts\LaravelEthereum\Lib;
-/**
- * Created by PhpStorm.
- * User: lee
- * Date: 11/12/2017
- * Time: 1:38 PM
- */
+
 class Ethereum extends JsonRPC
 {
     public function ether_request($method, $params=array())

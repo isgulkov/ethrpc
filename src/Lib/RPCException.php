@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: lee
- * Date: 11/12/2017
- * Time: 3:15 PM
- */
 
 namespace Jcsofts\LaravelEthereum\Lib;
-
 
 class RPCException extends \Exception
 {

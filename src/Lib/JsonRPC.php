@@ -1,14 +1,8 @@
 <?php
+
 namespace Jcsofts\LaravelEthereum\Lib;
+
 use GuzzleHttp\Client;
-
-/**
- * Created by PhpStorm.
- * User: lee
- * Date: 11/12/2017
- * Time: 1:38 PM
- */
-
 
 class JsonRPC
 {

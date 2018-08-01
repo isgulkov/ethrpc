@@ -1,16 +1,11 @@
 <?php
+
 namespace Jcsofts\LaravelEthereum;
 
 use Illuminate\Config\Repository;
 use Illuminate\Support\ServiceProvider;
 use Jcsofts\LaravelEthereum\Lib\Ethereum;
 
-/**
- * Created by PhpStorm.
- * User: lee
- * Date: 11/12/2017
- * Time: 1:38 PM
- */
 class EthereumServiceProvider extends ServiceProvider
 {
     protected $defer = true;
