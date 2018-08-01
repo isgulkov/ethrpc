@@ -26,7 +26,7 @@ and the probram literally just forwards this to the node in an HTTP `POST`'s bod
 {
     "jsonrpc": "2.0",
     "id": 1,
-    "method": "web3_clientVersion",
+    "method": "eth_somethingOrOther",
     "params": ["this", "that", "other"]
 }
 ```
@@ -37,7 +37,7 @@ The node returns you either the result:
 {
 	"id": 1,
 	"jsonrpc": "2.0",
-     "result": "Donald Trump"
+    "result": "Donald Trump"
 }
 ```
 
@@ -55,6 +55,8 @@ or error response:
 ```
 
 This is literally all the library does — pass simple JSON through, sometimes throwing an exception. No parsing of binary data packets, no complex logic, no encyption. Just a small convenience.
+
+**There are some caveats concerning numbers, though.** Might do that in the future.
 
 Installation
 ------------
@@ -130,9 +132,14 @@ Alternatively, you can set them in `.env` file, which the default config file us
 ```dotenv
 ETH_RPC_HOST=http://localhost
 ETH_RPC_PORT=8545
+ETH_RPC_TIMEOUT=1
 ```
 
 after which, it falls back to the defaults (see above).
+
+Note: `timeout`  is the time (in seconds) the HTTP client is going to wait for a node's response. Set to `0` to wait indefinitely. Be careful, though — if the node is reluctant to respond, which is not unheard of, your application will block for that much time.
+
+The default of 1 second is vastly more than enough for a local node.
 
 > **TODO**: either remove the default values from `env()` calls, or remove all "no config" checks — one or the other!
 

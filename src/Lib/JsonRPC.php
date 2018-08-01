@@ -15,7 +15,7 @@ class JsonRPC
     {
         $baseUri = $host . ":" . $port;
 
-        $this->timeout = isset($options['timeout']) ? $options['timeout'] : 0;
+        $this->timeout = isset($options['timeout']) ? $options['timeout'] : 1;
         $this->version = isset($options['version']) ? $options['version'] : "2.0";
 
         $this->client = isset(
