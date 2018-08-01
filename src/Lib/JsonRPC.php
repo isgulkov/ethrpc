@@ -37,7 +37,9 @@ class JsonRPC
         try {
             $res = $this->client->request("POST",'', [
                 'headers'  => ['content-type' => 'application/json'],
-                'json' => $data
+                'json' => $data,
+                'timeout' => 1
+                // TODO: let configure
             ]);
             $formatted=json_decode($res->getBody()->getContents());
 
