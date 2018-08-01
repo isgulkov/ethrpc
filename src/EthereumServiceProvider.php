@@ -16,14 +16,16 @@ class EthRPCServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $dist = __DIR__.'/../config/ethereum.php';
+        $dist = __DIR__.'/../config/eth_rpc.php';
+
         if (function_exists('config_path')) {
             // Publishes config File.
             $this->publishes([
-                $dist => config_path('ethereum.php'),
+                $dist => config_path('eth_rpc.php'),
             ]);
         }
-        $this->mergeConfigFrom($dist, 'ethereum');
+
+        $this->mergeConfigFrom($dist, 'eth_rpc');
     }
 
     /**
@@ -33,7 +35,7 @@ class EthRPCServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Ethereum::class, function ($app) {
+        $this->app->singleton(EthRPC::class, function ($app) {
             return $this->createInstance($app['config']);
         });
     }
@@ -47,18 +49,20 @@ class EthRPCServiceProvider extends ServiceProvider
     {
         // Check for ethereum config file.
         if (! $this->hasConfigSection()) {
-            $this->raiseRunTimeException('Missing ethereum configuration section.');
-        }
-        // Check for username.
-        if ($this->configHasNo('host')) {
-            $this->raiseRunTimeException('Missing ethereum configuration: "host".');
-        }
-        // check the password
-        if ($this->configHasNo('port')) {
-            $this->raiseRunTimeException('Missing ethereum configuration: "port".');
+            $this->raiseRunTimeException("Missing Ethereum RPC configuration section.");
         }
 
-        return new Ethereum($config->get('ethereum.host'), $config->get('ethereum.port'));
+        // Check for username.
+        if ($this->configHasNo('host')) {
+            $this->raiseRunTimeException("Missing Ethereum RPC config key: 'host'.");
+        }
+
+        // check the password
+        if ($this->configHasNo('port')) {
+            $this->raiseRunTimeException("Missing Ethereum RPC config key: 'port'.");
+        }
+
+        return new EthRPC($config->get('eth_rpc.host'), $config->get('eth_rpc.port'));
     }
 
     /**
@@ -68,7 +72,7 @@ class EthRPCServiceProvider extends ServiceProvider
      */
     protected function hasConfigSection()
     {
-        return $this->app->make(Repository::class)->has('ethereum');
+        return $this->app->make(Repository::class)->has('eth_rpc');
     }
 
     /**
@@ -97,13 +101,13 @@ class EthRPCServiceProvider extends ServiceProvider
         /** @var Config $config */
         $config = $this->app->make(Repository::class);
         // Check for ethereum config file.
-        if (! $config->has('ethereum')) {
+        if (! $config->has('eth_rpc')) {
             return false;
         }
         return
-            $config->has('ethereum.'.$key) &&
-            ! is_null($config->get('ethereum.'.$key)) &&
-            ! empty($config->get('ethereum.'.$key));
+            $config->has('eth_rpc.'.$key) &&
+            ! is_null($config->get('eth_rpc.'.$key)) &&
+            ! empty($config->get('eth_rpc.'.$key));
     }
 
     /**
