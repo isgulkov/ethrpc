@@ -1,8 +1,8 @@
 <?php
 
-namespace Jcsofts\LaravelEthereum\Lib;
+namespace IsGulkov\EthRPC\Lib;
 
-class Ethereum extends JsonRPC
+class EthRPC extends JsonRPC
 {
     public function ether_request($method, $params=array())
     {

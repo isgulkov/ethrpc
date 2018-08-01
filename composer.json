@@ -1,13 +1,20 @@
 {
-    "name": "jcsofts/laravel-ethereum",
-    "description": "the ethereum json rpc api",
+    "name": "isgulkov/ethrpc",
+    "description": "A thin PHP interface to Ethereum JSON RPC",
     "type": "library",
     "license": "MIT",
     "keywords": [
         "Ethereum",
+        "ETH",
+        "RPC",
+        "cryptocurrency",
         "Laravel"
     ],
     "authors": [
+        {
+            "name": "Ilya Gulkov",
+            "email": "x@isgulkov.ru"
+        },
         {
             "name": "lee",
             "email": "jcsoft@aliyun.com"
@@ -22,16 +29,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Jcsofts\\LaravelEthereum\\": "src/"
+            "IsGulkov\\EthRPC\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Jcsofts\\LaravelEthereum\\EthereumServiceProvider"
+                "IsGulkov\\EthRPC\\EthRPCServiceProvider"
             ],
             "aliases": {
-                "Ethereum": "Jcsofts\\LaravelEthereum\\Facade\\Ethereum"
+                "EthRPC": "IsGulkov\\EthRPC\\Facade\\EthRPC"
             }
         }
     }

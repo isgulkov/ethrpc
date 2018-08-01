@@ -1,12 +1,12 @@
 <?php
 
-namespace Jcsofts\LaravelEthereum;
+namespace IsGulkov\EthRPC;
 
 use Illuminate\Config\Repository;
 use Illuminate\Support\ServiceProvider;
-use Jcsofts\LaravelEthereum\Lib\Ethereum;
+use IsGulkov\EthRPC\Lib\EthRPC;
 
-class EthereumServiceProvider extends ServiceProvider
+class EthRPCServiceProvider extends ServiceProvider
 {
     protected $defer = true;
     /**
@@ -40,7 +40,7 @@ class EthereumServiceProvider extends ServiceProvider
 
     public function provides()
     {
-        return [Ethereum::class];
+        return [EthRPC::class];
     }
 
     protected function createInstance(Repository $config)
@@ -58,9 +58,7 @@ class EthereumServiceProvider extends ServiceProvider
             $this->raiseRunTimeException('Missing ethereum configuration: "port".');
         }
 
-
         return new Ethereum($config->get('ethereum.host'), $config->get('ethereum.port'));
-
     }
 
     /**
@@ -70,8 +68,7 @@ class EthereumServiceProvider extends ServiceProvider
      */
     protected function hasConfigSection()
     {
-        return $this->app->make(Repository::class)
-            ->has('ethereum');
+        return $this->app->make(Repository::class)->has('ethereum');
     }
 
     /**

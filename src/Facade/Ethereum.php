@@ -1,13 +1,13 @@
 <?php
 
-namespace Jcsofts\LaravelEthereum\Facade;
+namespace IsGulkov\EthRPC\Facade;
 
 use Illuminate\Support\Facades\Facade;
 
-class Ethereum extends Facade
+class EthRPC extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \Jcsofts\LaravelEthereum\Lib\Ethereum::class;
+        return \IsGulkov\EthRPC\Lib\EthRPC::class;
     }
 }

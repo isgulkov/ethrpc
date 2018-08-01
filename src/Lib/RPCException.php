@@ -1,6 +1,6 @@
 <?php
 
-namespace Jcsofts\LaravelEthereum\Lib;
+namespace IsGulkov\EthRPC\Lib;
 
 class RPCException extends \Exception
 {
