@@ -8,7 +8,7 @@ namespace Jcsofts\LaravelEthereum\Lib;
  */
 class Ethereum extends JsonRPC
 {
-    private function ether_request($method, $params=array())
+    public function ether_request($method, $params=array())
     {
         try
         {
