@@ -2,22 +2,26 @@
 
 namespace IsGulkov\EthRPC\Lib;
 
-use GuzzleHttp\Client;
+use GuzzleHttp;
 
 class JsonRPC
 {
-    protected $host, $port, $version;
+    protected $baseUri, $version;
     protected $id = 0;
     private $client;
 
-    function __construct($host, $port, $version="2.0")
+    function __construct($host, $port, $version="2.0", GuzzleHttp\Client $client=null)
     {
-        $this->host = $host;
-        $this->port = $port;
+        $baseUri = $host . ":" . $port;
         $this->version = $version;
-        $this->client=new Client([
-            'base_uri' => $this->host.":".$this->port
-        ]);
+
+        if($client === null) {
+            $client = new GuzzleHttp\Client([
+                'base_uri' => $baseUri
+            ]);
+        }
+
+        $this->client = $client;
     }
 
     function request($method, $params=array())
