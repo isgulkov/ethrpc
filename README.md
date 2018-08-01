@@ -1,107 +1,68 @@
 <h2 align="center">
-    Ethereum Package for Laravel
+    Ethereum RPC Package for Laravel
 </h2>
 
-<p align="center">
-    <a href="https://packagist.org/packages/jcsofts/laravel-ethereum"><img src="https://poser.pugx.org/jcsofts/laravel-ethereum/v/stable?format=flat-square" alt="Latest Stable Version"></a>
-    <a href="https://packagist.org/packages/jcsofts/laravel-ethereum"><img src="https://poser.pugx.org/jcsofts/laravel-ethereum/v/unstable?format=flat-square" alt="Latest Unstable Version"></a>    
-    <a href="https://packagist.org/packages/jcsofts/laravel-ethereum"><img src="https://poser.pugx.org/jcsofts/laravel-ethereum/license?format=flat-square" alt="License"></a>
-    <a href="https://packagist.org/packages/jcsofts/laravel-ethereum"><img src="https://poser.pugx.org/jcsofts/laravel-ethereum/downloads" alt="Total Downloads"></a>
-</p>
+>  **TODO**: put the badges back
 
 ## Introduction
 
-This is a simple Laravel Service Provider providing for <a href="https://github.com/ethereum/wiki/wiki/JSON-RPC">Generic JSON RPC</a>
+This is a simple Laravel Service Provider providing for interacting with an Ethereum node through its [JSON RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC) interface.
 
-and <a href="https://github.com/ethereum/go-ethereum/wiki/Management-APIs">Management API</a>
+The description of [the package this is forked from](https://github.com/jcsofts/laravel-ethereum) said basically all the same, including the word "simple". Then I go in because something wasn't working and realize it could use a fair bit more of simplification.
+
+Note that this package is mostly targeted at [Parity JSON API](https://wiki.parity.io/JSONRPC).
 
 Installation
 ------------
 
-To install the PHP client library using Composer:
+>  **TODO**: change this if I finally put it up
+
+You can't install install this library like usual with Composer
 
 ```bash
-composer require jcsofts/laravel-ethereum
+php composer.phar require isgulkov/ethrpc
 ```
 
-Alternatively, add these two lines to your composer require section:
+because I'm too embarrased to publish it on packagist. So you have to intrude into your `composer.json` a bit.
+
+Add `"isgulkov/ethrpc": "dev-master"` to `"require"`, but to make it work, also add this repository to `repositories`:
 
 ```json
 {
+    ...
+
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "<... this repo's GitHub URL ...>"
+        }
+    ],
+	...
     "require": {
-        "jcsofts/laravel-ethereum": "dev-master"
+        ...
+        "isgulkov/ethrpc": "dev-master"
+        ...
     }
 }
 ```
 
 ### Laravel 5.5+
 
-If you're using Laravel 5.5 or above, the package will automatically register the `Ethereum` provider and facade.
+The previous description said:
+
+>  If you're using Laravel 5.5 or above, the package will automatically register the ~~`Ethereum`~~ `EthRPC` provider and facade.
+
+Honestly, I have no idea. I've only ran 5.6 in my life.
 
 ### Laravel 5.4 and below
 
-Add `Jcsofts\LaravelEthereum\EthereumServiceProvider` to the `providers` array in your `config/app.php`:
+Here's the usual stuff about adding the provider and the facade alias to your `config/app.php`.
 
-```php
-'providers' => [
-    // Other service providers...
+I personally don't know anything about neither 5.4 nor below, though.
 
-    Jcsofts\LaravelEthereum\EthereumServiceProvider::class,
-],
-```
+### Using ~~Laravel-Ethereum~~ EthRPC with Lumen
 
-If you want to use the facade interface, you can `use` the facade class when needed:
-
-```php
-use Jcsofts\LaravelEthereum\Facade\Ethereum;
-```
-
-Or add an alias in your `config/app.php`:
-
-```php
-'aliases' => [
-    ...
-    'Ethereum' => Jcsofts\LaravelEthereum\Facade\Ethereum::class,
-],
-```
-
-### Using Laravel-Ethereum with Lumen
-
-laravel-ethereum works with Lumen too! You'll need to do a little work by hand
-to get it up and running. First, install the package using composer:
-
-
-```bash
-composer require jcsofts/laravel-ethereum
-```
-
-Next, we have to tell Lumen that our library exists. Update `bootstrap/app.php`
-and register the `EthereumServiceProvider`:
-
-```php
-$app->register(Jcsofts\LaravelEthereum\EthereumServiceProvider::class);
-```
-
-Finally, we need to configure the library. Unfortunately Lumen doesn't support
-auto-publishing files so you'll have to create the config file yourself by creating
-a config directory and copying the config file out of the package in to your project:
-
-```bash
-mkdir config
-cp vendor/jcsofts/laravel-ethereum/config/ethereum.php config/ethereum.php
-```
-
-At this point, set `ETH_HOST` and `ETH_PORT` in your `.env` file and it should
-be working for you. You can test this with the following route:
-
-```php
-try{
-        $ret = \Jcsofts\LaravelEthereum\Facade\Ethereum::eth_protocolVersion();
-        print_r($ret);
-    }catch (Exception $e){
-        echo $e->getMessage();
-    }
-```
+Don't look at me! Read what [the other guy](https://github.com/jcsofts/laravel-ethereum/commit/91d4fb8d52f20586aef90fb507d7b67552290fe4) wrote. Maybe it still works.
 
 Configuration
 -------------
@@ -112,31 +73,54 @@ You can use `artisan vendor:publish` to copy the distribution configuration file
 php artisan vendor:publish
 ```
 
-Then update `config/ethereum.php` with your credentials. Alternatively, you can update your `.env` file with the following:
+Then update `config/eth_rpc.php` with your settings.
+
+> **TODO**: list the keys?
+
+Alternatively, you can set them in `.env` file, which the config file defaults to:
 
 ```dotenv
-ETH_HOST=http://localhost
-ETH_PORT=8545
+ETH_RPC_HOST=http://localhost
+ETH_RPC_PORT=8545
 ```
 
-Usage
------
-   
+## Usage
+
+
 To use the Ethereum Client Library you can use the facade, or request the instance from the service container:
 
 ```php
-try{
-        $ret = \Jcsofts\LaravelEthereum\Facade\Ethereum::eth_protocolVersion();
+    try {
+        $ret = \EthRPC\EthRPC\Facade\EthRPC::eth_protocolVersion();
         print_r($ret);
-    }catch (Exception $e){
+    } catch (Exception $e){
         echo $e->getMessage();
     }
 ```
 
+> **TODO**: this example ↑ has to be improved. Who writes like that?
+
 Or
 
 ```php
-$thereum = app('Ethereum');
+$eth = app('EthRPC');
 
-$result=$thereum->eth_protocolVersion();
+dd($eth::eth_protocolVersion());
 ```
+
+>  **TODO**: provide a more elaborate explanation that just two examples, ffs — the library is 1 KB large
+
+## Troubleshooting
+
+#### I try to call a method I found in so-and-so wiki, but it says "method not supported"!
+
+This probably has nothing to do with the library — it's the node. Which one are you using? Because command support differs greatly between them.
+
+Also, on Parity, for example, most commands are disabled by default, and have to be manually enabled on startup.
+
+So, look into your node. Feel free to post an issue, though.
+
+## Credits
+
+[That guy](https://github.com/jcsofts), the owner of [this repo](https://github.com/jcsofts/laravel-ethereum) that I forked this from. Maybe it's a half-baked fork of some better thing, but I couldn't find anything close to it and serioursly doubt that.
+
