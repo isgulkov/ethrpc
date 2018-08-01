@@ -9,19 +9,20 @@ class JsonRPC
     protected $baseUri, $version;
     protected $id = 0;
     private $client;
+    private $timeout;
 
-    function __construct($host, $port, $version="2.0", GuzzleHttp\Client $client=null)
+    function __construct($host, $port, $options=[])
     {
         $baseUri = $host . ":" . $port;
-        $this->version = $version;
 
-        if($client === null) {
-            $client = new GuzzleHttp\Client([
-                'base_uri' => $baseUri
-            ]);
-        }
+        $this->timeout = isset($options['timeout']) ? $options['timeout'] : 0;
+        $this->version = isset($options['version']) ? $options['version'] : "2.0";
 
-        $this->client = $client;
+        $this->client = isset(
+            $options['client']
+        ) ? $options['client'] : new GuzzleHttp\Client(
+            [ 'base_uri' => $baseUri ]
+        );
     }
 
     function request($method, $params=array())
@@ -33,24 +34,27 @@ class JsonRPC
         $data['params'] = $params;
 
         try {
-            $res = $this->client->request("POST",'', [
-                'headers'  => ['content-type' => 'application/json'],
+            $res = $this->client->request("POST", '', [
+                'headers'  => [
+                    'content-type' => 'application/json'
+                ],
                 'json' => $data,
-                'timeout' => 1
-                // TODO: let configure
+                'timeout' => $this->timeout
             ]);
-            $formatted=json_decode($res->getBody()->getContents());
 
-            //print_r($formatted);
-            if(isset($formatted->error))
-            {
-                throw new RPCException($formatted->error->message, $formatted->error->code);
+            $formatted = json_decode($res->getBody()->getContents());
+
+            if(isset($formatted->error)) {
+                throw new RPCException(
+                    $formatted->error->message,
+                    $formatted->error->code
+                );
             }
-            else
-            {
+            else {
                 return $formatted;
             }
-        } catch (ClientException $e) {
+        }
+        catch (ClientException $e) {
             throw $e;
         }
     }

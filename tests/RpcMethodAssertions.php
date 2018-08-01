@@ -36,7 +36,9 @@ abstract class RpcMethodAssertions extends TestCase
             ]
         );
 
-        $ethRpc = new EthRPC('127.0.0.1', '8545', "2.0", $client);
+        $ethRpc = new EthRPC('127.0.0.1', '8545', [
+            'client' => $client
+        ]);
 
         call_user_func_array([$ethRpc, $methodName], $params);
         // $ethRpc->$methodName();
@@ -53,7 +55,9 @@ abstract class RpcMethodAssertions extends TestCase
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
 
-        $ethRpc = new EthRPC('127.0.0.1', '8545', "2.0", $client);
+        $ethRpc = new EthRPC('127.0.0.1', '8545', [
+            'client' => $client
+        ]);
 
         if($expectedReturn === null) {
             $expectedReturn = $returnedResult;
