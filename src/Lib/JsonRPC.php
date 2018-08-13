@@ -11,6 +11,11 @@ class JsonRPC
     private $client;
     private $timeout;
 
+    function getTimeout()
+    {
+        return $this->timeout;
+    }
+
     function __construct($host, $port, $options=[])
     {
         $baseUri = $host . ":" . $port;
@@ -54,7 +59,23 @@ class JsonRPC
                 return $formatted;
             }
         }
-        catch (ClientException $e) {
+        catch(GuzzleHttp\Exception\ConnectException $e) {
+            if(stripos($e->getMessage(), "cURL error 28") !== false) {
+                $groups = [];
+
+                if(preg_match('/(\d+) milliseconds/', $e->getMessage(), $groups)) {
+                    throw new HTTPTimeoutException(intval($groups[1]));
+                }
+                else {
+                    throw new HTTPTimeoutException();
+                }
+            }
+            else {
+                throw $e;
+            }
+        }
+        catch (GuzzleHttp\Exception\ClientException $e) {
+            // TODO: rethrow another exception?
             throw $e;
         }
     }

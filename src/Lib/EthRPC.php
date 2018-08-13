@@ -6,13 +6,11 @@ class EthRPC extends JsonRPC
 {
     public function ether_request($method, $params=array())
     {
-        try
-        {
+        try {
             $ret = $this->request($method, $params);
             return $ret->result;
         }
-        catch(RPCException $e)
-        {
+        catch(RPCException $e) {
             throw $e;
         }
     }
@@ -54,8 +52,10 @@ class EthRPC extends JsonRPC
     {
         $balance = $this->ether_request(__FUNCTION__, array($address, $block));
 
-        if($decode_hex)
+        if($decode_hex) {
+            // TODO: remove -- this results in double
             $balance = $this->decode_hex($balance);
+        }
 
         return $balance;
     }
@@ -102,17 +102,17 @@ class EthRPC extends JsonRPC
         }
     }
 
-    function eth_call($message, $block)
-    {
-        if(!is_a($message, EthereumMessage::class))
-        {
-            throw new ErrorException('Message object expected');
-        }
-        else
-        {
-            return $this->ether_request(__FUNCTION__, $message->toArray());
-        }
-    }
+//    function eth_call($message, $block)
+//    {
+//        if(!is_a($message, EthereumMessage::class))
+//        {
+//            throw new ErrorException('Message object expected');
+//        }
+//        else
+//        {
+//            return $this->ether_request(__FUNCTION__, $message->toArray());
+//        }
+//    }
 
     function eth_estimateGas($message, $block)
     {
