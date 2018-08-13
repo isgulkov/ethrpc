@@ -38,6 +38,17 @@ class EthRPCServiceProvider extends ServiceProvider
         $this->app->singleton(EthRPC::class, function ($app) {
             return $this->createInstance($app['config']);
         });
+
+        // TODO: add Laravel dependency to package.json
+
+        $this->commands([
+            Commands\EthRpcNodeDiag::class
+        ]);
+
+        // $this->commands('command.eternaltree.install');
+
+        // $this->getOutput()->setDecorated( true );
+
     }
 
     public function provides()
