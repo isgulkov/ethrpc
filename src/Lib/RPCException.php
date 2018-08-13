@@ -19,7 +19,9 @@ class RPCException extends \Exception
 
 class HTTPTimeoutException extends RPCException
 {
-    public function __construct($msDuration = null)
+    private $msDuration;
+
+    public function __construct(?int $msDuration = null)
     {
         if($msDuration !== null) {
             parent::__construct("Request has timed out at " . $msDuration . " ms");
@@ -27,5 +29,12 @@ class HTTPTimeoutException extends RPCException
         else {
             parent::__construct("Request has timed out");
         }
+
+        $this->msDuration = $msDuration;
+    }
+
+    public function getDuration() : ?int
+    {
+        return $this->msDuration;
     }
 }

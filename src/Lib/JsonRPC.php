@@ -69,6 +69,8 @@ class JsonRPC
                 else {
                     throw new HTTPTimeoutException();
                 }
+
+                // TODO: cURL error 7 -- connection refused
             }
             else {
                 throw $e;
